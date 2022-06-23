@@ -1,9 +1,10 @@
 FROM golang:1.18-alpine
 
-ENV GRUNTWORK_INSTALLER_VERSION=0.0.38 \
-    DEFAULT_BIN_DIR=/tools
+ENV GRUNTWORK_INSTALLER_VERSION=0.0.38
+# ENV DEFAULT_MODULES_DOWNLOAD_DIR=
+ENV DEFAULT_BIN_DIR=/tools
 
-RUN mkdir /tools &&\
+RUN mkdir -p /tools/tmp &&\
     apk --no-cache add \
     bash \
     curl \
