@@ -9,9 +9,6 @@ if [ -z "$TF_WORKSPACE" ]; then
   exit 1
 fi
 
-./scripts/setup.sh
-echo "------------------------------------------------------------"
-
 ./scripts/terraform_download.sh
 echo "------------------------------------------------------------"
 
