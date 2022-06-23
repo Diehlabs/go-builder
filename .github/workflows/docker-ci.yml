@@ -21,7 +21,8 @@ jobs:
           tag_with_latest: true
           # cache: true
           # cache_registry: cache
-          skip_unchanged_digest: true
+          # skip_unchanged_digest: true
+          strip_tag_prefix: v
 
   # docker-scan:
   #   runs-on: ubuntu-latest
