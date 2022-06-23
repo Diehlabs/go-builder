@@ -1,12 +1,17 @@
 name: Ansible Release
+
 on:
-  workflow_run:
-    workflows:
-      - 'Docker CI'
+  push:
     branches:
-      - main
-    types:
-      - completed
+      main
+
+  # workflow_run:
+  #   workflows:
+  #     - 'Docker CI'
+  #   branches:
+  #     - main
+  #   types:
+  #     - completed
 
 jobs:
   release:
@@ -24,3 +29,41 @@ jobs:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Kaniko build
+        uses: aevea/action-kaniko@master
+        with:
+          # image: go-builder
+          # registry: ghcr.io
+          # password: ${{ secrets.GITHUB_TOKEN }}
+          image: cultclassik/go-builder
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          tag_with_latest: true
+          # cache: true
+          # cache_registry: cache
+          # skip_unchanged_digest: true
+          strip_tag_prefix: v
+
+  # docker-scan:
+  #   runs-on: ubuntu-latest
+  #   steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: cultclassik/go-builder:${{ steps.tag_version.outputs.new_tag }}
+          # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
