@@ -2,9 +2,6 @@ name: Docker build
 
 on: push
 
-env:
-  IMAGE_TAG: develop
-
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -17,14 +14,14 @@ jobs:
           image: cultclassik/go-builder
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ IMAGE_TAG }}
+          tag: develop
           # cache: true
           # cache_registry: aevea/cache
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:${{ IMAGE_TAG }} #'docker.io/my-organization/my-app:${{ github.sha }}'
+          image-ref: cultclassik/go-builder:develop #'docker.io/my-organization/my-app:${{ github.sha }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
