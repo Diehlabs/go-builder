@@ -9,7 +9,7 @@ if [ -z "$TF_WORKSPACE" ]; then
   exit 1
 fi
 
-./scripts/terraform_download.sh
+./terraform_download.sh
 echo "------------------------------------------------------------"
 
 terraform init &&\
