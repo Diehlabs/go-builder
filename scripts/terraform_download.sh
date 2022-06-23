@@ -19,13 +19,13 @@ MY_OUTPUT=$(curl \
   --retry-delay 0 \
   --retry-max-time 10 \
   --request GET \
-  -o "/usr/local/bin/terraform.zip" \
+  -o "${DEFAULT_BIN_DIR}/terraform.zip" \
   "$TF_DL_URL")
   echo "$MY_OUTPUT" | jq -C .
 
 if [ "$MY_OUTPUT" -eq 200 ]; then
-  unzip "/usr/local/bin/terraform.zip" -d "/usr/local/bin/" &&\
-    chmod +x "/usr/local/bin/terraform"
+  unzip "${DEFAULT_BIN_DIR}/terraform.zip" -d "${DEFAULT_BIN_DIR}" &&\
+    chmod +x "${DEFAULT_BIN_DIR}/terraform"
   terraform --version
 else
   echo "Got http code ${MY_OUTPUT} when downloading ${TF_DL_URL}"
