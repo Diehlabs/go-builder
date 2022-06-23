@@ -1,9 +1,9 @@
-name: Docker build
+name: Docker CI
 
 on: push
 
 jobs:
-  docker:
+  docker-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -18,6 +18,9 @@ jobs:
           # cache: true
           # cache_registry: aevea/cache
 
+  docker-scan:
+    runs-on: ubuntu-latest
+    steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
