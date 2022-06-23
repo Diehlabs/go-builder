@@ -12,7 +12,7 @@ jobs:
         uses: aevea/action-kaniko@master
         with:
           image: go-builder
-          registry: docker.io # ghcr.io
+          registry: ghcr.io
           # username: ${{ secrets.DOCKERHUB_USERNAME }}
           # password: ${{ secrets.DOCKERHUB_PASSWORD }}
           password: ${{ secrets.GITHUB_TOKEN }}
