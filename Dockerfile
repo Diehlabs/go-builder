@@ -10,8 +10,9 @@ RUN apk --no-cache add \
     yq \
     unzip
 
-RUN mkdir /tools &&\
-    curl -LsS https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version "v${GRUNTWORK_INSTALLER_VERSION}" --no-sudo
+RUN mkdir /tools
+# RUN mkdir /tools &&\
+#     curl -LsS https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version "v${GRUNTWORK_INSTALLER_VERSION}" --no-sudo
 
 COPY ./scripts/ /tools/
 
