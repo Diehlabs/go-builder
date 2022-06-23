@@ -10,9 +10,9 @@ jobs:
 
       - name: Kaniko build
         uses: aevea/action-kaniko@master
-        with: ghcr.io
+        with:
           image: cultclassik/go-builder
-          registry:
+          registry: ghcr.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.GITHUB_TOKEN }} # ${{ secrets.DOCKERHUB_PASSWORD }}
           tag: develop
