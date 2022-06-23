@@ -10,9 +10,11 @@ RUN mkdir /scripts
 
 COPY ./scripts/ /scripts/
 
-WORKDIR /scripts
+RUN adduser -S -D -H -h /app notroot &&\
+    chmod +x /scripts/*.sh &&\
+    chown -R notroot /scripts
 
-RUN adduser -S -D -H -h /app notroot
+WORKDIR /scripts
 
 USER notroot
 
