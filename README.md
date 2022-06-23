@@ -12,7 +12,7 @@ docker run --rm -it \
 docker run --rm \
   -e TF_CLI_VERSION=1.2.3 \
   cultclassik/go-builder:latest \
-  terraform_download.sh
+  common.sh
 ```
 
 Example of using gruntwork-installer in the container:
