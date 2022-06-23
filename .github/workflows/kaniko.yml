@@ -8,8 +8,8 @@ jobs:
       - name: Kaniko build
         uses: aevea/action-kaniko@master
         with:
-          image: aevea/kaniko
+          image: cultclassik/go-builder
           username: "naw" #${{ secrets.DOCKERHUB_USERNAME }}
           password: "naw" #${{ secrets.DOCKERHUB_PASSWORD }}
-          cache: true
-          cache_registry: aevea/cache
+          # cache: true
+          # cache_registry: aevea/cache
