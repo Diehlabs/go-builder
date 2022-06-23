@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+source "${DEFAULT_BIN_DIR}/common.sh"
 
 ##########################################################
 # Requires env var TF_WORKSPACE to be set.
@@ -9,7 +11,7 @@ if [ -z "$TF_WORKSPACE" ]; then
   exit 1
 fi
 
-./terraform_download.sh
+tf_install
 echo "------------------------------------------------------------"
 
 terraform init &&\

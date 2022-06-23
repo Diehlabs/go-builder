@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+source "${DEFAULT_BIN_DIR}/common.sh"
+
 ##########################################################
 # Requires env var TF_WORKSPACE to be set.
 # This is used by Terraform itself and the pipeline.
@@ -10,7 +13,7 @@ fi
 
 mkdir ./artifacts
 
-./terraform_download.sh
+tf_install
 echo "------------------------------------------------------------"
 
 terraform init &&\
