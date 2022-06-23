@@ -14,7 +14,6 @@ jobs:
           image: go-builder
           # registry: ghcr.io
           # password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           tag: ${{ github.sha }}
