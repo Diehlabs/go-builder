@@ -30,7 +30,7 @@ jobs:
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
-      - uses: actions/checkout@master
+      - uses: actions/checkout@${{ steps.tag_version.outputs.new_tag }}
 
       - name: Kaniko build
         uses: aevea/action-kaniko@master
@@ -41,7 +41,7 @@ jobs:
           image: cultclassik/go-builder
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ steps.tag_version.outputs.new_tag }}
+          # tag: ${{ steps.tag_version.outputs.new_tag }}
           tag_with_latest: true
           # cache: true
           # cache_registry: cache
@@ -54,7 +54,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:${{ steps.tag_version.outputs.new_tag }}
+          image-ref: cultclassik/go-builder:latest
           # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
