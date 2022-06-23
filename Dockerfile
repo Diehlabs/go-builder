@@ -4,6 +4,7 @@ ENV GRUNTWORK_INSTALLER_VERSION=0.0.22 \
     DEFAULT_BIN_DIR=/tools
 
 RUN apk --no-cache add \
+    bash \
     curl \
     jq \
     yq \
