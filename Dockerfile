@@ -1,5 +1,11 @@
 FROM golang:1.18-alpine
 
+RUN apk --no-cache add \
+    curl \
+    jq \
+    yq \
+    unzip
+
 RUN mkdir /scripts
 
 COPY ./scripts/ /scripts/
