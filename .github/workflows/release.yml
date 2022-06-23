@@ -23,14 +23,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
+      - uses: actions/checkout@v3
         with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
-
-      - uses: actions/checkout@${{ steps.tag_version.outputs.new_tag }}
+          ref: ${{ steps.tag_version.outputs.new_tag }}
 
       - name: Kaniko build
         uses: aevea/action-kaniko@master
@@ -46,7 +41,6 @@ jobs:
           # cache: true
           # cache_registry: cache
           # skip_unchanged_digest: true
-          strip_tag_prefix: v
 
   # docker-scan:
   #   runs-on: ubuntu-latest
@@ -54,7 +48,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:latest
+          image-ref: cultclassik/go-builder:${{ steps.tag_version.outputs.new_tag }}
           # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
@@ -64,3 +58,10 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
