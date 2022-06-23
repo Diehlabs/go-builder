@@ -1,0 +1,46 @@
+name: Docker CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      main
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Kaniko build
+        uses: aevea/action-kaniko@master
+        with:
+          # image: go-builder
+          # registry: ghcr.io
+          # password: ${{ secrets.GITHUB_TOKEN }}
+          image: cultclassik/go-builder
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          tag: ${{ github.sha }}
+          tag_with_latest: false
+          # cache: true
+          # cache_registry: cache
+          # skip_unchanged_digest: true
+          strip_tag_prefix: v
+
+  # docker-scan:
+  #   runs-on: ubuntu-latest
+  #   steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: cultclassik/go-builder:${{ github.sha }}
+          # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
