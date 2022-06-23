@@ -19,8 +19,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           tag: ${{ github.sha }}
           tag_with_latest: true
-          cache: true
-          cache_registry: cache
+          # cache: true
+          # cache_registry: cache
+          skip_unchanged_digest: true
 
   # docker-scan:
   #   runs-on: ubuntu-latest
