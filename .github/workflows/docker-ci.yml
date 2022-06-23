@@ -12,10 +12,11 @@ jobs:
         uses: aevea/action-kaniko@master
         with:
           image: go-builder
-          registry: ghcr.io
-          # username: ${{ secrets.DOCKERHUB_USERNAME }}
-          # password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          # registry: ghcr.io
+          # password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
           tag: ${{ github.sha }}
           tag_with_latest: true
           cache: true
@@ -27,8 +28,8 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          # image-ref: cultclassik/go-builder:develop #'docker.io/my-organization/my-app:${{ github.sha }}'
-          image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
+          image-ref: cultclassik/go-builder:develop
+          # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
 
