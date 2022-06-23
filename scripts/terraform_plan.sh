@@ -10,7 +10,7 @@ fi
 
 mkdir ./artifacts
 
-./scripts/terraform_download.sh
+./terraform_download.sh
 echo "------------------------------------------------------------"
 
 terraform init &&\

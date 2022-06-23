@@ -1,0 +1,22 @@
+name: Terratools Pipe
+image: diehlabs/go-builder:latest
+category: Utilities
+description: Provide Terraform and relating tooling for Bitbucket Pipelines
+variables:
+  - name: ENV_NAME
+    default: ‘Production’
+  - name: SECRET_KEY
+    default: ‘${SECRET_KEY}’ # this is pulling the value of $SECRET_KEY from the pipeline
+repository: https://github.com/Diehlabs/go-builder
+maintainer:
+  name: Diehlabs
+  website: https://github.com/Diehlab
+  email: cultclassik@gmail.com
+vendor:
+  name: Demo
+  website: https://example.com/
+  email: contact@example.com
+tags:
+  - terraform
+  - terragrunt
+  - terratest
