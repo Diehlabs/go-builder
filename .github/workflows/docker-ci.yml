@@ -11,9 +11,10 @@ jobs:
       - name: Kaniko build
         uses: aevea/action-kaniko@master
         with:
-          image: go-builder
+          # image: go-builder
           # registry: ghcr.io
           # password: ${{ secrets.GITHUB_TOKEN }}
+          image: cultclassik/go-builder
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           tag: ${{ github.sha }}
