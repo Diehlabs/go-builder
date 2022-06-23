@@ -41,7 +41,6 @@ jobs:
           # cache: true
           # cache_registry: cache
           # skip_unchanged_digest: true
-          strip_tag_prefix: v
 
   # docker-scan:
   #   runs-on: ubuntu-latest
@@ -49,7 +48,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:latest
+          image-ref: cultclassik/go-builder:${{ steps.tag_version.outputs.new_tag }}
           # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
