@@ -17,7 +17,7 @@ COPY ./scripts/ /tools/
 
 RUN adduser -S -D -H -h /tools notroot &&\
     curl -LsS https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version "v${GRUNTWORK_INSTALLER_VERSION}" --no-sudo true
-    curl -s https://bitbucket.org/bitbucketpipelines/bitbucket-pipes-toolkit-bash/raw/0.6.0/common.sh > /common.sh
+    curl -s https://bitbucket.org/bitbucketpipelines/bitbucket-pipes-toolkit-bash/raw/0.6.0/common.sh > "${DEFAULT_BIN_DIR}/common.sh"
     chmod +x /tools/*.sh &&\
     chown -R notroot /tools &&\
 
