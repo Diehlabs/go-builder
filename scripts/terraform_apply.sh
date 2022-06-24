@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "${DEFAULT_BIN_DIR}/common.sh"
+source "${DEFAULT_BIN_DIR}/functions.sh"
 
 ##########################################################
 # Requires env var TF_WORKSPACE to be set.
