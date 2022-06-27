@@ -4,17 +4,13 @@ on:
   push:
     branches:
       main
-
-  # workflow_run:
-  #   workflows:
-  #     - 'Docker CI'
-  #   branches:
-  #     - main
-  #   types:
-  #     - completed
+    workflow_dispatch:
 
 jobs:
-  release:
+  docker-build:
+    strategy:
+      matrix:
+        version: ['1.16','1.17','1.18','1.18-terra']
     runs-on: ubuntu-20.04
     steps:
       - name: Bump version and push tag
@@ -36,8 +32,9 @@ jobs:
           image: cultclassik/go-builder
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ steps.tag_version.outputs.new_tag }}
+          tag: ${{ steps.tag_version.outputs.new_tag }}-${{ matrix.version }}
           tag_with_latest: true
+          build_file: ${{ matrix.version }}/Dockerfile
           # cache: true
           # cache_registry: cache
           # skip_unchanged_digest: true
@@ -48,7 +45,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:${{ steps.tag_version.outputs.new_tag }}
+          image-ref: cultclassik/go-builder:${{ steps.tag_version.outputs.new_tag }}-${{ matrix.version }}
           # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'

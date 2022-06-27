@@ -8,9 +8,6 @@ on:
 
 jobs:
   docker-build:
-    strategy:
-      matrix:
-        version: ['1.16','1.17','1.18','1.18-terra']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -24,13 +21,12 @@ jobs:
           image: cultclassik/go-builder
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ matrix.version }}-${{ github.sha }}
+          tag: ${{ github.sha }}
           tag_with_latest: false
           # cache: true
           # cache_registry: cache
           # skip_unchanged_digest: true
           strip_tag_prefix: v
-          build_file: ${{ matrix.version }}/Dockerfile
 
   # docker-scan:
   #   runs-on: ubuntu-latest
@@ -38,7 +34,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:${{ matrix.version }}-${{ github.sha }}
+          image-ref: cultclassik/go-builder:${{ github.sha }}
           # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'

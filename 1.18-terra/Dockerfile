@@ -9,6 +9,7 @@ RUN mkdir -p /tools/tmp &&\
     apk --no-cache add \
     bash \
     curl \
+    git \
     jq \
     yq \
     unzip
@@ -19,7 +20,8 @@ RUN adduser -S -D -H -h /tools notroot &&\
     curl -LsS https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version "v${GRUNTWORK_INSTALLER_VERSION}" --no-sudo true  &&\
     curl -s https://bitbucket.org/bitbucketpipelines/bitbucket-pipes-toolkit-bash/raw/0.6.0/common.sh > "${DEFAULT_BIN_DIR}/common.sh"  &&\
     chmod +x /tools/*.sh &&\
-    chown -R notroot /tools
+    chown -R notroot /tools &&\
+    git config --global url."git@bitbucket.org:".insteadOf "https://bitbucket.org/"
 
 # RUN go install &&\
 #     go mod tidy
