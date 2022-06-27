@@ -7,6 +7,11 @@ on:
       main
 
 jobs:
+  docker_matrix:
+    strategy:
+      matrix:
+        version: ['1.16','1.17','1.18','1.18-terra']
+
   docker-build:
     runs-on: ubuntu-latest
     steps:
@@ -21,12 +26,13 @@ jobs:
           image: cultclassik/go-builder
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ github.sha }}
+          tag: ${{ matrix.version }}-${{ github.sha }}
           tag_with_latest: false
           # cache: true
           # cache_registry: cache
           # skip_unchanged_digest: true
           strip_tag_prefix: v
+          build_file: ${{ matrix.version }}
 
   # docker-scan:
   #   runs-on: ubuntu-latest

@@ -1,24 +1,16 @@
-name: Docker Build & Release
+name: Docker CI
 
 on:
+  workflow_dispatch:
   push:
-    branches:
+    branches-ignore:
       main
-    workflow_dispatch:
 
 jobs:
-  release:
-    runs-on: ubuntu-20.04
+  docker-build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.6
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.tag_version.outputs.new_tag }}
+      - uses: actions/checkout@master
 
       - name: Kaniko build
         uses: aevea/action-kaniko@master
@@ -29,11 +21,12 @@ jobs:
           image: cultclassik/go-builder
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          tag_with_latest: true
+          tag: ${{ github.sha }}
+          tag_with_latest: false
           # cache: true
           # cache_registry: cache
           # skip_unchanged_digest: true
+          strip_tag_prefix: v
 
   # docker-scan:
   #   runs-on: ubuntu-latest
@@ -41,7 +34,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:${{ steps.tag_version.outputs.new_tag }}
+          image-ref: cultclassik/go-builder:${{ github.sha }}
           # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
@@ -51,10 +44,3 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
-
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
