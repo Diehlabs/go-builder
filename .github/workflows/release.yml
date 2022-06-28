@@ -20,6 +20,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   docker-build:
+    needs: tag-repo
     strategy:
       matrix:
         version: ['1.16','1.17','1.18','1.18-terra']
@@ -67,6 +68,7 @@ jobs:
 
   tags:
     runs-on: ubuntu-20.04
+    needs: docker-build
     steps:
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
