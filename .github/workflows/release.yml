@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           # image: cultclassik/go-builder
           # password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}
+          tag: ${{ needs.tag-repo.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}
           tag_with_latest: false
           build_file: ${{ matrix.version }}/Dockerfile
           # cache: true
