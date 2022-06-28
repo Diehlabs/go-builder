@@ -23,20 +23,24 @@ terraform init &&\
 echo "------------------------------------------------------------" &&\
 terraform validate &&\
 echo "------------------------------------------------------------" &&\
-# store base terraform command in var
-TF_CMD='terraform plan -out="artifacts/terraform_plan_${TF_WORKSPACE}_${BITBUCKET_BUILD_NUMBER}"'
+
 
 # append var files passed as $1 to the base command
-if [ -n "$TF_WORKSPACE" ]; then
+if [ -n "$VAR_FILES_INPUT" ]; then
   IFS=',' read -r -a array <<< "$VAR_FILES_INPUT"
-  for file in "${VAR_FILES_INPUT[@]}"
+  for file in "${array[@]}"
   do
-    TF_CMD+="-var-file=${$file}"
+    TF_CMD_ARGS+='-var-file='
+    TF_CMD_ARGS+="$file "
   done
 fi
 
 #execute the terraform command
+TF_CMD="terraform plan -out=artifacts/terraform_plan_${TF_WORKSPACE}_${BITBUCKET_BUILD_NUMBER} ${TF_CMD_ARGS}"
+echo "Running command:"
+echo "$TF_CMD"
 bash -c "$TF_CMD"
+
 
 # Will use the exit code to determine if an apply stage should be triggered
 
