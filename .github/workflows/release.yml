@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       image_name: ghcr.io/diehlabs/go-builder/go
-      image_tag: ${{ needs.tag.tag_version.outputs.new_tag }}-${{ matrix.version }}
+      image_tag: ${{ needs.tag-repo.tag_version.outputs.new_tag }}-${{ matrix.version }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           # image: cultclassik/go-builder
           # password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ needs.tag.tag_version.outputs.new_tag }}-${{ matrix.version }}
+          tag: ${{ tag_version.outputs.new_tag }}-${{ matrix.version }}
           tag_with_latest: false
           build_file: ${{ matrix.version }}/Dockerfile
           # cache: true
@@ -82,5 +82,5 @@ jobs:
           # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login ghcr.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker pull ${{ needs.docker-build.outputs.image_name }}
-          docker tag ${{ needs.docker-build.outputs.image_name }}:${{ needs.docker-build.outputs.image_tag }} ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag.tag_version.outputs.new_tag }}-latest
-          docker push ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag.tag_version.outputs.new_tag }}-latest
+          docker tag ${{ needs.docker-build.outputs.image_name }}:${{ needs.docker-build.outputs.image_tag }} ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag-repo.tag_version.outputs.new_tag }}-latest
+          docker push ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag-repo.tag_version.outputs.new_tag }}-latest
