@@ -2,6 +2,9 @@
 
 source "${DEFAULT_BIN_DIR}/functions.sh"
 
+export TF_INPUT=0
+VAR_FILES_INPUT=$1
+
 ##########################################################
 # Requires env var TF_WORKSPACE to be set.
 # This is used by Terraform itself and the pipeline.
@@ -20,7 +23,20 @@ terraform init &&\
 echo "------------------------------------------------------------" &&\
 terraform validate &&\
 echo "------------------------------------------------------------" &&\
-terraform plan -out="artifacts/terraform_plan_${TF_WORKSPACE}_${BITBUCKET_BUILD_NUMBER}" -var-file="./variables/${TF_WORKSPACE}.tfvars"
+# store base terraform command in var
+TF_CMD='terraform plan -out="artifacts/terraform_plan_${TF_WORKSPACE}_${BITBUCKET_BUILD_NUMBER}"'
+
+# append var files passed as $1 to the base command
+if [ -n "$TF_WORKSPACE" ]; then
+  IFS=',' read -r -a array <<< "$VAR_FILES_INPUT"
+  for file in "${VAR_FILES_INPUT[@]}"
+  do
+    TF_CMD+="-var-file=${$file}"
+  done
+fi
+
+#execute the terraform command
+bash -c "$TF_CMD"
 
 # Will use the exit code to determine if an apply stage should be triggered
 

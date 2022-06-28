@@ -7,11 +7,11 @@ on:
     workflow_dispatch:
 
 jobs:
-  docker-build:
-    strategy:
-      matrix:
-        version: ['1.16','1.17','1.18','1.18-terra']
+  tag-repo:
     runs-on: ubuntu-20.04
+    outputs:
+      tag_version: ${{ steps.tag_version.outputs.new_tag }}
+      change_log: ${{ steps.tag_version.outputs.changelog }}
     steps:
       - name: Bump version and push tag
         id: tag_version
@@ -19,21 +19,27 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+  docker-build:
+    strategy:
+      matrix:
+        version: ['1.16','1.17','1.18','1.18-terra']
+    runs-on: ubuntu-20.04
+    steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ steps.tag_version.outputs.new_tag }}
+          ref: ${{ needs.tag-repo..outputs.tag_version }}
 
       - name: Kaniko build
         uses: aevea/action-kaniko@master
         with:
-          # image: go-builder
-          # registry: ghcr.io
-          # password: ${{ secrets.GITHUB_TOKEN }}
-          image: cultclassik/go-builder
+          image: go
+          registry: ghcr.io
+          password: ${{ secrets.GITHUB_TOKEN }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tag: ${{ steps.tag_version.outputs.new_tag }}-${{ matrix.version }}
-          tag_with_latest: true
+          # image: cultclassik/go-builder
+          # password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          tag: ${{ needs.tag.tag_version.outputs.new_tag }}-${{ matrix.version }}
+          tag_with_latest: false
           build_file: ${{ matrix.version }}/Dockerfile
           # cache: true
           # cache_registry: cache
@@ -45,8 +51,8 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:${{ steps.tag_version.outputs.new_tag }}-${{ matrix.version }}
-          # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
+          # image-ref: cultclassik/go-builder:${{ needs.tag-repo.outputs.tag_version }}-${{ matrix.version }}
+          image-ref: ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.outputs.tag_version }}-${{ matrix.version }}
           format: 'sarif'
           output: 'trivy-results.sarif'
 
@@ -56,9 +62,18 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
+  # tags:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Create a GitHub release
+  #       uses: ncipollo/release-action@v1
+  #       with:
+  #         tag: ${{ needs.tag-repo..outputs.tag_version }}
+  #         name: Release ${{ needs.tag-repo..outputs.tag_version }}
+  #         body: ${{ needs.tag-repo.outputs.change_log }}
+  #     - name: Tag Docker as latest
+  #       run: |
+  #         # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+  #         echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+  #         docker tag

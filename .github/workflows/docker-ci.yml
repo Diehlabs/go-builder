@@ -18,12 +18,12 @@ jobs:
       - name: Kaniko build
         uses: aevea/action-kaniko@master
         with:
-          # image: go-builder
-          # registry: ghcr.io
-          # password: ${{ secrets.GITHUB_TOKEN }}
-          image: cultclassik/go-builder
+          image: go
+          registry: ghcr.io
+          password: ${{ secrets.GITHUB_TOKEN }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          # image: cultclassik/go-builder
+          # password: ${{ secrets.DOCKERHUB_PASSWORD }}
           tag: ${{ matrix.version }}-${{ github.sha }}
           tag_with_latest: false
           # cache: true
@@ -38,8 +38,8 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: cultclassik/go-builder:${{ matrix.version }}-${{ github.sha }}
-          # image-ref: ghcr.io/diehlabs/go-builder:${{ github.sha }}
+          # image-ref: cultclassik/go-builder:${{ matrix.version }}-${{ github.sha }}
+          image-ref: ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
 
