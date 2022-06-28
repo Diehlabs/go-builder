@@ -69,21 +69,21 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-  tags:
-    runs-on: ubuntu-20.04
-    needs: docker-build
-    steps:
-      # - name: Create a GitHub release
+      - name: Tag Docker as latest
+        run: |
+          # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          echo "docker pull ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}"
+          echo "docker tag ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }} ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest"
+          echo "docker push ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest"
+
+  # release:
+  #   runs-on: ubuntu-20.04
+  #   needs: docker-build
+  #   steps:
+  #     # - name: Create a GitHub release
       #   uses: ncipollo/release-action@v1
       #   with:
       #     tag: ${{ needs.tag-repo.outputs.tag_version }}
       #     name: Release ${{ needs.tag-repo.outputs.tag_version }}
       #     body: ${{ needs.tag-repo.outputs.change_log }}
-
-      - name: Tag Docker as latest
-        run: |
-          # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          echo "docker pull ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}"
-          echo "docker tag ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }} ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest"
-          echo "docker push ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest"
