@@ -26,7 +26,7 @@ jobs:
         version: ['1.16','1.17','1.18','1.18-terra']
     runs-on: ubuntu-20.04
     outputs:
-      image_name: ghcr.io/diehlabs/go-builder/go
+      image_name: ghcr.io/diehlabs/go-builder
       image_tag: ${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}
       base_tag: ${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}
 
@@ -84,6 +84,6 @@ jobs:
         run: |
           # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker pull ${{ needs.docker-build.outputs.image_name }}:${{ needs.docker-build.outputs.image_tag }}
-          docker tag ${{ needs.docker-build.outputs.image_name }}:${{ needs.docker-build.outputs.image_tag }} ${{ needs.docker-build.outputs.image_name }}:${{ matrix.version }}-latest
-          docker push ${{ needs.docker-build.outputs.image_name }}:${{ matrix.version }}-latest
+          docker pull ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}
+          docker tag ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }} ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest
+          docker push ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest
