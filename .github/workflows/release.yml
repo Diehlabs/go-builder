@@ -24,6 +24,9 @@ jobs:
       matrix:
         version: ['1.16','1.17','1.18','1.18-terra']
     runs-on: ubuntu-20.04
+    outputs:
+      image_name: ghcr.io/diehlabs/go-builder/go
+      image_tag: ${{ needs.tag.tag_version.outputs.new_tag }}-${{ matrix.version }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -62,18 +65,20 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-  # tags:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Create a GitHub release
-  #       uses: ncipollo/release-action@v1
-  #       with:
-  #         tag: ${{ needs.tag-repo.outputs.tag_version }}
-  #         name: Release ${{ needs.tag-repo.outputs.tag_version }}
-  #         body: ${{ needs.tag-repo.outputs.change_log }}
-  #     - name: Tag Docker as latest
-  #       run: |
-  #         # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-  #         echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+  tags:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.tag-repo.outputs.tag_version }}
+          name: Release ${{ needs.tag-repo.outputs.tag_version }}
+          body: ${{ needs.tag-repo.outputs.change_log }}
 
-  #         docker tag
+      - name: Tag Docker as latest
+        run: |
+          # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login ghcr.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker pull ${{ needs.docker-build.outputs.image_name }}
+          docker tag ${{ needs.docker-build.outputs.image_name }}:${{ needs.docker-build.outputs.image_tag }} ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag.tag_version.outputs.new_tag }}-latest
+          docker push ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag.tag_version.outputs.new_tag }}-latest
