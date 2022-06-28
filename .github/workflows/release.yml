@@ -28,6 +28,7 @@ jobs:
     outputs:
       image_name: ghcr.io/diehlabs/go-builder/go
       image_tag: ${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}
+      base_tag: ${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}
 
     steps:
       - uses: actions/checkout@v3
@@ -84,5 +85,5 @@ jobs:
           # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker pull ${{ needs.docker-build.outputs.image_name }}:${{ needs.kaniko.outputs.image_tag }}
-          docker tag ${{ needs.docker-build.outputs.image_name }}:${{ needs.kaniko.outputs.image_tag }} ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag-repo.tag_version.outputs.new_tag }}-latest
-          docker push ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag-repo.tag_version.outputs.new_tag }}-latest
+          docker tag ${{ needs.docker-build.outputs.image_name }}:${{ needs.kaniko.outputs.image_tag }} ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag-repo.tag_version.outputs.base_tag }}-latest
+          docker push ${{ needs.docker-build.outputs.image_name }}:${{ needs.tag-repo.tag_version.outputs.base_tag }}-latest
