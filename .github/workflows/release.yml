@@ -84,6 +84,6 @@ jobs:
         run: |
           # echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker pull ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}
-          docker tag ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }} ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest
-          docker push ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest
+          echo "docker pull ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }}"
+          echo "docker tag ghcr.io/diehlabs/go-builder/go:${{ needs.tag-repo.tag_version.outputs.tag_version }}-${{ matrix.version }}-${{ github.sha }} ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest"
+          echo "docker push ghcr.io/diehlabs/go-builder/go:${{ matrix.version }}-latest"
