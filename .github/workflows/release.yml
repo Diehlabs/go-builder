@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ needs.tag-repo..outputs.tag_version }}
+          ref: ${{ needs.tag-repo.outputs.tag_version }}
 
       - name: Kaniko build
         uses: aevea/action-kaniko@master
@@ -68,8 +68,8 @@ jobs:
   #     - name: Create a GitHub release
   #       uses: ncipollo/release-action@v1
   #       with:
-  #         tag: ${{ needs.tag-repo..outputs.tag_version }}
-  #         name: Release ${{ needs.tag-repo..outputs.tag_version }}
+  #         tag: ${{ needs.tag-repo.outputs.tag_version }}
+  #         name: Release ${{ needs.tag-repo.outputs.tag_version }}
   #         body: ${{ needs.tag-repo.outputs.change_log }}
   #     - name: Tag Docker as latest
   #       run: |
